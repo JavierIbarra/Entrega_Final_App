@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Asistencia</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="profile">Perfil</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Cerrar Sesión</string>
+    <string name="assistance">Registrar Asistencia</string>
+    <string name="participants">Participantes</string>
+    <string name="location">Ubiacación</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="button_login">Inicar</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="title_activity_user">UserActivity</string>
+</resources>
