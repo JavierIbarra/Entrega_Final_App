@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.jaiba.asistencia.R;
@@ -35,10 +36,10 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
         holder.email.setText(ListaTrabajadores.get(position).getEmail());
         holder.name.setText(ListaTrabajadores.get(position).getName());
         if (ListaTrabajadores.get(position).getEntry()==1){
-            holder.entry.setBackgroundColor(Color.parseColor("#088A08"));
+            holder.entry.setBackgroundColor(Color.parseColor("#CEF6CE"));
         }
         else {
-            holder.entry.setBackgroundColor(Color.parseColor("#B40404"));
+            holder.entry.setBackgroundColor(Color.parseColor("#F6CECE"));
         }
     }
 
@@ -51,13 +52,13 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
     public class TrabajadoresHolder extends RecyclerView.ViewHolder {
 
         TextView name,email;
-        Button entry;
+        LinearLayout entry;
 
         public TrabajadoresHolder(View itemView) {
             super(itemView);
             name= (TextView) itemView.findViewById(R.id.name);
             email= (TextView) itemView.findViewById(R.id.email);
-            entry= (Button) itemView.findViewById(R.id.btnEntry);
+            entry= (LinearLayout) itemView.findViewById(R.id.btnEntry);
         }
     }
 }
