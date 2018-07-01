@@ -129,6 +129,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
 
                 trabajadores.setEmail(jsonObject.optString("email_trabajador"));
                 trabajadores.setName(jsonObject.optString("nombre"));
+                trabajadores.setEntry(jsonObject.optInt("entrada"));
 
                 listaTrabajadores.add(trabajadores);
             }

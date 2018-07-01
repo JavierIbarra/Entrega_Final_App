@@ -4,6 +4,7 @@ public class Trabajadores {
 
     private String name;
     private String email;
+    private int entry;
 
     public void Trabajadores(){}
 
@@ -22,4 +23,8 @@ public class Trabajadores {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public int getEntry() { return entry; }
+
+    public void setEntry(int entry) { this.entry = entry; }
 }

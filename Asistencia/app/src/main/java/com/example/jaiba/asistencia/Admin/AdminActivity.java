@@ -68,7 +68,7 @@ public class AdminActivity extends AppCompatActivity
         textViewTipo=(TextView)view.findViewById(R.id.textViewTipo);
         SharedPreferences preferences = getSharedPreferences("Login", Context.MODE_PRIVATE);
         textViewEmail.setText(preferences.getString("email",""));
-        textViewTipo.setText(preferences.getString("admin","Usuario"));
+        textViewTipo.setText("Administrador");
     }
 
     @Override

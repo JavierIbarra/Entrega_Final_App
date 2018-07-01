@@ -1,9 +1,11 @@
 package com.example.jaiba.asistencia.Adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jaiba.asistencia.R;
@@ -30,8 +32,14 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
 
     @Override
     public void onBindViewHolder(TrabajadoresHolder holder, int position) {
-        holder.email.setText(ListaTrabajadores.get(position).getEmail().toString());
-        holder.name.setText(ListaTrabajadores.get(position).getName().toString());
+        holder.email.setText(ListaTrabajadores.get(position).getEmail());
+        holder.name.setText(ListaTrabajadores.get(position).getName());
+        if (ListaTrabajadores.get(position).getEntry()==1){
+            holder.entry.setBackgroundColor(Color.parseColor("#088A08"));
+        }
+        else {
+            holder.entry.setBackgroundColor(Color.parseColor("#B40404"));
+        }
     }
 
     @Override
@@ -43,11 +51,13 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
     public class TrabajadoresHolder extends RecyclerView.ViewHolder {
 
         TextView name,email;
+        Button entry;
 
         public TrabajadoresHolder(View itemView) {
             super(itemView);
             name= (TextView) itemView.findViewById(R.id.name);
             email= (TextView) itemView.findViewById(R.id.email);
+            entry= (Button) itemView.findViewById(R.id.btnEntry);
         }
     }
 }
