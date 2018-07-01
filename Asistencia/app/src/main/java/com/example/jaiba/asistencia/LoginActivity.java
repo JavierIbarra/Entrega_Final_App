@@ -43,6 +43,24 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
     StringRequest stringRequest;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences preferences = getSharedPreferences("Login", Context.MODE_PRIVATE);
+
+        if (preferences.getString("validacion","")!=""){
+            if (preferences.getString("admin","Usuario")!=""){
+                Intent intent = new Intent(this,AdminActivity.class);
+                startActivityForResult(intent,1);
+            }
+            else{
+                Intent intent = new Intent(this,UserActivity.class);
+                startActivityForResult(intent,1);
+            }
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -122,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements Response.Listene
             else{
                 Intent intent = new Intent(getApplicationContext(), UserActivity.class);
                 startActivityForResult(intent,1);
-                Obj_editor.putString("admin","Usuario");
+                Obj_editor.putString("admin","");
             }
             Obj_editor.commit();
         }
