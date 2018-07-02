@@ -6,13 +6,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -22,11 +27,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.jaiba.asistencia.R;
+import com.example.jaiba.asistencia.User.UserActivity;
 
 import java.io.File;
+import java.util.jar.Manifest;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -60,6 +69,9 @@ public class AssistanceFragment extends Fragment {
     Bitmap bitmap;
     Button tomarFoto;
     ImageView imgFoto;
+    double longitude;
+    double latitude;
+    boolean GPS_Activado;
 
     private OnFragmentInteractionListener mListener;
 
@@ -78,6 +90,7 @@ public class AssistanceFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GPS_Activado = false;
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -98,36 +111,65 @@ public class AssistanceFragment extends Fragment {
             tomarFoto.setEnabled(false);
         }
 
+        PermissionGPS();
+
         tomarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mostrarDialogOpciones();
-            }
-        });
-        return vista;
-    }
-
-    private void mostrarDialogOpciones() {
-        final CharSequence[] opciones={"Entrada","Salida","Cancelar"};
-        final AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
-        builder.setTitle("Elige una Opción");
-        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (opciones[i].equals("Entrada")){
-                    Entrada_Salida="Entrada";
+                tomarUbicacion();
+                if (GPS_Activado) {
                     abrirCamara();
-                }else{
-                    if (opciones[i].equals("Salida")){
-                        Entrada_Salida="Salida";
-                        abrirCamara();
-                    }else{
-                        dialogInterface.dismiss();
-                    }
                 }
             }
         });
-        builder.show();
+
+        return vista;
+    }
+
+    private void tomarUbicacion(){
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            AlertDialog.Builder dialogo=new AlertDialog.Builder(getContext());
+            dialogo.setTitle("GPS Desactivado");
+            dialogo.setMessage("Debe activar el GPS para el correcto funcionamiento de la App");
+
+            dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            dialogo.show();
+        }
+        else{
+            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            };
+
+            int permissionChek = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0 ,0, locationListener);
+            GPS_Activado = true;
+        }
     }
 
     private void abrirCamara() {
@@ -179,14 +221,11 @@ public class AssistanceFragment extends Fragment {
                             }
                         });
 
-                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                bitmap = BitmapFactory.decodeFile(path);
                 imgFoto.setImageBitmap(bitmap);
 
                 break;
         }
-
-
-
     }
 
     public void onButtonPressed(Uri uri) {
@@ -223,7 +262,6 @@ public class AssistanceFragment extends Fragment {
             return true;
         }
 
-
         if ((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)||(shouldShowRequestPermissionRationale(CAMERA)))){
             cargarDialogoRecomendacion();
         }else{
@@ -231,6 +269,19 @@ public class AssistanceFragment extends Fragment {
         }
 
         return false;//implementamos el que procesa el evento dependiendo de lo que se defina aqui
+    }
+
+    private void PermissionGPS(){
+        int permissionChek = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if(permissionChek== PackageManager.PERMISSION_DENIED){
+            if(shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)){
+                cargarDialogoRecomendacionGPS();
+            }
+            else{
+                requestPermissions( new String[] {ACCESS_FINE_LOCATION},1);
+            }
+        }
     }
 
     private void cargarDialogoRecomendacion() {
@@ -242,6 +293,20 @@ public class AssistanceFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,CAMERA},100);
+            }
+        });
+        dialogo.show();
+    }
+
+    private void cargarDialogoRecomendacionGPS() {
+        AlertDialog.Builder dialogo=new AlertDialog.Builder(getContext());
+        dialogo.setTitle("Permisos Desactivados");
+        dialogo.setMessage("Debe aceptar los permisos para el correcto funcionamiento de la App");
+
+        dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                requestPermissions(new String[]{ACCESS_FINE_LOCATION},1);
             }
         });
         dialogo.show();
