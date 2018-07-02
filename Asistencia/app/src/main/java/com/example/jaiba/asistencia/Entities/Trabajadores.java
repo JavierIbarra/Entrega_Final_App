@@ -1,10 +1,15 @@
 package com.example.jaiba.asistencia.Entities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class Trabajadores {
 
     private String name;
     private String email;
     private int entry;
+    private Bitmap imagen;
+    private String rutaImagen;
 
     public void Trabajadores(){}
 
@@ -20,11 +25,13 @@ public class Trabajadores {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
     public int getEntry() { return entry; }
 
     public void setEntry(int entry) { this.entry = entry; }
+
+    public String getRutaImagen() { return rutaImagen; }
+
+    public void setRutaImagen(String rutaImagen) { this.rutaImagen = rutaImagen; }
 }

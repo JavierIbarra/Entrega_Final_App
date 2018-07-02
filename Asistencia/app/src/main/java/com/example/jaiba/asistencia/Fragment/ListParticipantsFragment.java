@@ -130,11 +130,12 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
                 trabajadores.setEmail(jsonObject.optString("email_trabajador"));
                 trabajadores.setName(jsonObject.optString("nombre"));
                 trabajadores.setEntry(jsonObject.optInt("entrada"));
+                trabajadores.setRutaImagen(jsonObject.getString("imagen"));
 
                 listaTrabajadores.add(trabajadores);
             }
             progress.hide();
-            TrabajadoresAdapter adapter=new TrabajadoresAdapter(listaTrabajadores);
+            TrabajadoresAdapter adapter=new TrabajadoresAdapter(listaTrabajadores, getContext());
             recyclerTrabajadores.setAdapter(adapter);
 
         } catch (JSONException e) {

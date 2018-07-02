@@ -1,25 +1,35 @@
 package com.example.jaiba.asistencia.Adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Bitmap;
+import android.widget.Toast;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
+import java.util.List;
 
 import com.example.jaiba.asistencia.R;
 import com.example.jaiba.asistencia.Entities.Trabajadores;
-
-import java.util.List;
+import com.example.jaiba.asistencia.VolleySingleton;
 
 public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapter.TrabajadoresHolder> {
 
     List<Trabajadores> ListaTrabajadores;
+    Context context;
 
-    public TrabajadoresAdapter(List<Trabajadores> ListaTrabajadores){
+    public TrabajadoresAdapter(List<Trabajadores> ListaTrabajadores, Context context){
         this.ListaTrabajadores=ListaTrabajadores;
+        this.context=context;
     }
 
     @Override
@@ -41,6 +51,32 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
         else {
             holder.entry.setBackgroundColor(Color.parseColor("#F6CECE"));
         }
+        if (ListaTrabajadores.get(position).getRutaImagen()!=null){
+            //
+            cargarImagenWebService(ListaTrabajadores.get(position).getRutaImagen(),holder);
+        }else{
+            holder.imagen.setImageResource(R.drawable.img_base);
+        }
+    }
+
+    private void cargarImagenWebService(String rutaImagen, final TrabajadoresHolder holder) {
+
+        String urlImagen="http://javieribarra.cl/"+rutaImagen;
+        urlImagen=urlImagen.replace(" ","%20");
+
+        ImageRequest imageRequest=new ImageRequest(urlImagen, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+                holder.imagen.setImageBitmap(response);
+            }
+        }, 0, 0, ImageView.ScaleType.CENTER, null, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context,"Error al cargar la imagen",Toast.LENGTH_SHORT).show();
+            }
+        });
+        //request.add(imageRequest);
+        VolleySingleton.getIntanciaVolley(context).addToRequestQueue(imageRequest);
     }
 
     @Override
@@ -53,12 +89,14 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
 
         TextView name,email;
         LinearLayout entry;
+        ImageView imagen;
 
         public TrabajadoresHolder(View itemView) {
             super(itemView);
             name= (TextView) itemView.findViewById(R.id.name);
             email= (TextView) itemView.findViewById(R.id.email);
             entry= (LinearLayout) itemView.findViewById(R.id.btnEntry);
+            imagen=(ImageView) itemView.findViewById(R.id.imgProfile);
         }
     }
 }
