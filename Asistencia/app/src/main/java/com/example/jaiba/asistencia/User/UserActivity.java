@@ -38,9 +38,6 @@ public class UserActivity extends AppCompatActivity
             Intent intent = new Intent(this,LoginActivity.class);
             startActivityForResult(intent,1);
         }
-
-        Fragment miFragment=new AssistanceFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_user,miFragment).commit();
     }
 
     @Override
@@ -60,6 +57,9 @@ public class UserActivity extends AppCompatActivity
         View hView = navigationView.getHeaderView(0);
         Cambiar(hView);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Fragment miFragment=new AssistanceFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_user,miFragment).commit();
     }
 
     private void Cambiar(View view) {

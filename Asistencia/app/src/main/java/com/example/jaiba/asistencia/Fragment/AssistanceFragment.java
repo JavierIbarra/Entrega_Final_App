@@ -142,15 +142,15 @@ public class AssistanceFragment extends Fragment {
             Long consecutivo= System.currentTimeMillis()/1000;
             String nombre=consecutivo.toString()+".jpg";
 
-            path= Environment.getExternalStorageDirectory()+ File.separator+DIRECTORIO_IMAGEN
-                    + File.separator+nombre;//indicamos la ruta de almacenamiento
+            path=Environment.getExternalStorageDirectory()+File.separator+DIRECTORIO_IMAGEN
+                    +File.separator+nombre;//indicamos la ruta de almacenamiento
 
             fileImagen=new File(path);
 
             Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(fileImagen));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(fileImagen));
 
-            if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N)
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N)
             {
                 String authorities=getContext().getPackageName()+".provider";
                 Uri imageUri= FileProvider.getUriForFile(getContext(),authorities,fileImagen);
@@ -179,7 +179,8 @@ public class AssistanceFragment extends Fragment {
                             }
                         });
 
-                imgFoto.setImageBitmap(BitmapFactory.decodeFile(path));
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                imgFoto.setImageBitmap(bitmap);
 
                 break;
         }
@@ -213,12 +214,12 @@ public class AssistanceFragment extends Fragment {
 
 
     private boolean solicitaPermisosVersionesSuperiores() {
-        if (Build.VERSION.SDK_INT< Build.VERSION_CODES.M){//validamos si estamos en android menor a 6 para no buscar los permisos
+        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.M){//validamos si estamos en android menor a 6 para no buscar los permisos
             return true;
         }
 
         //validamos si los permisos ya fueron aceptados
-        if((getContext().checkSelfPermission(WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)&&getContext().checkSelfPermission(CAMERA)== PackageManager.PERMISSION_GRANTED){
+        if((getContext().checkSelfPermission(WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED)&&getContext().checkSelfPermission(CAMERA)==PackageManager.PERMISSION_GRANTED){
             return true;
         }
 

@@ -39,9 +39,6 @@ public class AdminActivity extends AppCompatActivity
             Intent intent = new Intent(this,LoginActivity.class);
             startActivityForResult(intent,1);
         }
-
-        Fragment miFragment=new ListParticipantsFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_admin,miFragment).commit();
     }
 
     @Override
@@ -61,6 +58,9 @@ public class AdminActivity extends AppCompatActivity
         View hView = navigationView.getHeaderView(0);
         Cambiar(hView);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Fragment miFragment=new ListParticipantsFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_admin,miFragment).commit();
     }
 
     private void Cambiar(View view) {
