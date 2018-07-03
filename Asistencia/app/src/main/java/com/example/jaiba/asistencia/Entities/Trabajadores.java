@@ -8,7 +8,6 @@ public class Trabajadores {
     private String name;
     private String email;
     private int entry;
-    private Bitmap imagen;
     private String rutaImagen;
 
     public void Trabajadores(){}

@@ -72,7 +72,7 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
         }, 0, 0, ImageView.ScaleType.CENTER, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,"Error al cargar la imagen",Toast.LENGTH_SHORT).show();
+
             }
         });
         //request.add(imageRequest);

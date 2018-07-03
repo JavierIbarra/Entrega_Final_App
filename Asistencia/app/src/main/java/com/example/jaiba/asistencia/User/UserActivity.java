@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.jaiba.asistencia.Fragment.AssistanceFragment;
+import com.example.jaiba.asistencia.Fragment.ProfileFragment;
 import com.example.jaiba.asistencia.Interface.IFragment;
 import com.example.jaiba.asistencia.LoginActivity;
 import com.example.jaiba.asistencia.R;
@@ -118,7 +119,8 @@ public class UserActivity extends AppCompatActivity
             miFragment=new AssistanceFragment();
             fragmentSeleccionado=true;
         } else if (id == R.id.nav_profile) {
-
+            miFragment=new ProfileFragment();
+            fragmentSeleccionado=true;
         }
 
         if (fragmentSeleccionado==true){
