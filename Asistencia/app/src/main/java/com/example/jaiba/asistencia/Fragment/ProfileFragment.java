@@ -32,11 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfileFragment extends Fragment implements Response.Listener<JSONObject>,Response.ErrorListener {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
 
     JsonObjectRequest jsonObjectRequest;
     RequestQueue request;
@@ -46,6 +41,7 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
     private TextView comunity;
     private TextView active;
     private ImageView profile;
+    private String EMAIL;
 
     private OnFragmentInteractionListener mListener;
 
@@ -53,29 +49,24 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
         // Required empty public constructor
     }
 
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        if (getArguments() != null) {
+            EMAIL = getArguments().getString("email");
+        }
+        else {
+            EMAIL="";
+        }
+
         View vista =  inflater.inflate(R.layout.fragment_profile, container, false);
+
         name = (TextView)vista.findViewById(R.id.textViewName);
         email = (TextView)vista.findViewById(R.id.textViewEmail);
         active = (TextView)vista.findViewById(R.id.textViewActive);
@@ -94,10 +85,7 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
         progress.setMessage("Consultando...");
         progress.show();
 
-        SharedPreferences preferences = getContext().getSharedPreferences("Login", Context.MODE_PRIVATE);
-        String email = preferences.getString("email", "");
-
-        String url="http://javieribarra.cl/wsJSON.php?email_trabajador="+email+"";
+        String url="http://javieribarra.cl/wsJSON.php?email_trabajador="+EMAIL+"";
 
         jsonObjectRequest=new JsonObjectRequest(Request.Method.GET,url,null,this,this);
         VolleySingleton.getIntanciaVolley(getContext()).addToRequestQueue(jsonObjectRequest);

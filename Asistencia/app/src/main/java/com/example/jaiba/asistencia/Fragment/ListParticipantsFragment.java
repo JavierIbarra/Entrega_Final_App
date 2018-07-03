@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +24,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
 import com.example.jaiba.asistencia.Adapter.TrabajadoresAdapter;
 import com.example.jaiba.asistencia.Entities.Trabajadores;
+import com.example.jaiba.asistencia.Fragment.ProfileFragment;
 import com.example.jaiba.asistencia.VolleySingleton;
 import com.example.jaiba.asistencia.R;
 
@@ -163,6 +166,24 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
             }
             progress.hide();
             TrabajadoresAdapter adapter=new TrabajadoresAdapter(listaTrabajadores, getContext());
+
+            adapter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String email = listaTrabajadores.get(recyclerTrabajadores.getChildAdapterPosition(view)).getEmail();
+                    Fragment nuevoFragmento = new ProfileFragment();
+
+                    Bundle args = new Bundle();
+                    args.putString("email", email);
+                    nuevoFragmento.setArguments(args);
+
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_admin, nuevoFragmento);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            });
+
             recyclerTrabajadores.setAdapter(adapter);
 
         } catch (JSONException e) {

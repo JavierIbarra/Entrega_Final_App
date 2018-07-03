@@ -22,10 +22,11 @@ import com.example.jaiba.asistencia.R;
 import com.example.jaiba.asistencia.Entities.Trabajadores;
 import com.example.jaiba.asistencia.VolleySingleton;
 
-public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapter.TrabajadoresHolder> {
+public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapter.TrabajadoresHolder> implements View.OnClickListener{
 
     List<Trabajadores> ListaTrabajadores;
     Context context;
+    private View.OnClickListener listener;
 
     public TrabajadoresAdapter(List<Trabajadores> ListaTrabajadores, Context context){
         this.ListaTrabajadores=ListaTrabajadores;
@@ -38,6 +39,9 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
         RecyclerView.LayoutParams layoutParams=new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         vista.setLayoutParams(layoutParams);
+
+        vista.setOnClickListener(this);
+
         return new TrabajadoresHolder(vista);
     }
 
@@ -82,6 +86,18 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
     @Override
     public int getItemCount() {
         return ListaTrabajadores.size();
+    }
+
+
+    public void setOnClickListener(View.OnClickListener listener){
+        this.listener=listener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(listener!=null){
+            listener.onClick(view);
+        }
     }
 
 

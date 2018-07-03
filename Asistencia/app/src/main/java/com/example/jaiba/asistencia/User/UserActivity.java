@@ -119,8 +119,15 @@ public class UserActivity extends AppCompatActivity
             miFragment=new AssistanceFragment();
             fragmentSeleccionado=true;
         } else if (id == R.id.nav_profile) {
+            SharedPreferences preferences = this.getSharedPreferences("Login", Context.MODE_PRIVATE);
+            String email = preferences.getString("email", "");
+
             miFragment=new ProfileFragment();
             fragmentSeleccionado=true;
+
+            Bundle args = new Bundle();
+            args.putString("email", email);
+            miFragment.setArguments(args);
         }
 
         if (fragmentSeleccionado==true){
