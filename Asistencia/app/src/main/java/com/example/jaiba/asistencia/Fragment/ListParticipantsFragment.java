@@ -2,16 +2,19 @@ package com.example.jaiba.asistencia.Fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -40,7 +43,8 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
+    Button btnfilter;
+    String ESTADO;
     RecyclerView recyclerTrabajadores;
     ArrayList<Trabajadores> listaTrabajadores;
     ProgressDialog progress;
@@ -73,16 +77,47 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
                              Bundle savedInstanceState) {
         View vista=inflater.inflate(R.layout.fragment_list_participants, container, false);
 
+        btnfilter=(Button)vista.findViewById(R.id.filter);
         listaTrabajadores=new ArrayList<>();
         recyclerTrabajadores= (RecyclerView) vista.findViewById(R.id.RecyclerView);
         recyclerTrabajadores.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recyclerTrabajadores.setHasFixedSize(true);
+
+        btnfilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarDialogOpciones();
+            }
+        });
+
         request= Volley.newRequestQueue(getContext());
         cargarWebService();
 
         return vista;
     }
 
+    private void mostrarDialogOpciones() {
+        final CharSequence[] opciones={"Activos","Inactivos","Todos"};
+        final AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+        builder.setTitle("Filtrar busqueda por");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (opciones[i].equals("Activos")){
+                    ESTADO="Activo";
+                }else{
+                    if (opciones[i].equals("Inactivos")){
+                        ESTADO="Inactivo";
+
+                    }else{
+                        ESTADO="";
+                    }
+                }
+                cargarWebService();
+            }
+        });
+        builder.show();
+    }
     private void cargarWebService() {
 
         progress=new ProgressDialog(getContext());
@@ -92,7 +127,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
         SharedPreferences preferences = getContext().getSharedPreferences("Login", Context.MODE_PRIVATE);
         String ID_EMPRESA = preferences.getString("id_empresa","");
 
-        String url="http://javieribarra.cl/wsJSON.php?id_empresa="+ID_EMPRESA+"";
+        String url="http://javieribarra.cl/wsJSON.php?id_empresa="+ID_EMPRESA+"&estado="+ESTADO+"";
 
         jsonObjectRequest=new JsonObjectRequest(Request.Method.GET,url,null,this,this);
         VolleySingleton.getIntanciaVolley(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -109,7 +144,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     @Override
     public void onResponse(JSONObject response) {
         Trabajadores trabajadores=null;
-
+        listaTrabajadores = new ArrayList<>();
         JSONArray json=response.optJSONArray("Trabajador");
 
         try {
