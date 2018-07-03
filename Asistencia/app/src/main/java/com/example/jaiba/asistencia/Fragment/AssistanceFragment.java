@@ -61,11 +61,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 public class AssistanceFragment extends Fragment /*implements Response.Listener<JSONObject>,Response.ErrorListener*/{
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
 
     private static final String CARPETA_PRINCIPAL = "Galeria/";//directorio principal
     private static final String CARPETA_IMAGEN = "Asistencia";//carpeta donde se guardan las fotos
@@ -91,23 +86,10 @@ public class AssistanceFragment extends Fragment /*implements Response.Listener<
     public AssistanceFragment() {
     }
 
-    public static AssistanceFragment newInstance(String param1, String param2) {
-        AssistanceFragment fragment = new AssistanceFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GPS_Activado = false;
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override

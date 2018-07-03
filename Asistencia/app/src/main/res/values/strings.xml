@@ -17,6 +17,11 @@
     <string name="button_login">Inicar</string>
     <string name="title_activity_admin">AdminActivity</string>
     <string name="title_activity_user">UserActivity</string>
+    <string name="email_user">Email:</string>
+    <string name="company">Empresa:</string>
+    <string name="name">Nombre:</string>
+    <string name="active">Estado:</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

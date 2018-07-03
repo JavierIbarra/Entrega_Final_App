@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
     private ProgressDialog progress;
     private TextView name;
     private TextView email;
-    private TextView comunity;
+    private TextView company;
     private TextView active;
     private ImageView profile;
     private String EMAIL;
@@ -70,7 +70,7 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
         name = (TextView)vista.findViewById(R.id.textViewName);
         email = (TextView)vista.findViewById(R.id.textViewEmail);
         active = (TextView)vista.findViewById(R.id.textViewActive);
-        comunity = (TextView)vista.findViewById(R.id.textViewCompany);
+        company = (TextView)vista.findViewById(R.id.textViewCompany);
         profile = (ImageView) vista.findViewById(R.id.Profile);
 
         request= Volley.newRequestQueue(getContext());
@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
 
             email.setText(email.getText()+" "+jsonObject.optString("email_trabajador"));
             name.setText(name.getText()+" "+jsonObject.optString("nombre"));
-            comunity.setText(comunity.getText()+""+jsonObject.optString("empresa"));
+            company.setText(company.getText()+" "+jsonObject.optString("empresa"));
             active.setText(active.getText()+" "+jsonObject.optString("entrada"));
             String rutaImagen = jsonObject.optString("imagen");
 

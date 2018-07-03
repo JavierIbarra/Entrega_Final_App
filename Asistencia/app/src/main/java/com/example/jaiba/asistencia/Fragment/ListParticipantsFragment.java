@@ -39,11 +39,6 @@ import java.util.ArrayList;
 
 
 public class ListParticipantsFragment extends Fragment implements Response.Listener<JSONObject>,Response.ErrorListener{
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
     Button btnfilter;
@@ -57,22 +52,10 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     public ListParticipantsFragment() {
     }
 
-    public static ListParticipantsFragment newInstance(String param1, String param2) {
-        ListParticipantsFragment fragment = new ListParticipantsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -193,13 +176,6 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
             progress.hide();
         }
 
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

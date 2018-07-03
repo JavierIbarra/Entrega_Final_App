@@ -28,49 +28,61 @@
             android:id="@+id/textViewName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="30dp"
-            android:text="Nombre:"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/name"
             android:textColor="#000000"
             android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Profile" />
+            app:layout_constraintTop_toBottomOf="@+id/Profile"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textViewEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="30dp"
-            android:text="Email:"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/email_user"
             android:textColor="#000000"
             android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewName"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textViewCompany"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="30dp"
-            android:text="Empresa:"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/company"
             android:textColor="#000000"
             android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewEmail"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textViewActive"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="30dp"
-            android:text="Estado:"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/active"
             android:textColor="#000000"
             android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCompany" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewCompany"
+            app:layout_constraintVertical_bias="0.0" />
 
 
     </android.support.constraint.ConstraintLayout>
