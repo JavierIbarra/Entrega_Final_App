@@ -1,8 +1,11 @@
 package com.example.jaiba.asistencia.Fragment;
 
+import android.app.ProgressDialog;
+import android.app.VoiceInteractor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +32,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.jaiba.asistencia.R;
 import com.example.jaiba.asistencia.User.UserActivity;
+import com.example.jaiba.asistencia.VolleySingleton;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.Manifest;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -40,23 +58,15 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AssistanceFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AssistanceFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AssistanceFragment extends Fragment {
+
+
+public class AssistanceFragment extends Fragment /*implements Response.Listener<JSONObject>,Response.ErrorListener*/{
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
     private String mParam2;
 
-    private String Entrada_Salida;
-    private Spinner EstadoSpinner;
     private static final String CARPETA_PRINCIPAL = "Galeria/";//directorio principal
     private static final String CARPETA_IMAGEN = "Asistencia";//carpeta donde se guardan las fotos
     private static final String DIRECTORIO_IMAGEN = CARPETA_PRINCIPAL + CARPETA_IMAGEN;//ruta carpeta de directorios
@@ -69,6 +79,9 @@ public class AssistanceFragment extends Fragment {
     Bitmap bitmap;
     Button tomarFoto;
     ImageView imgFoto;
+    ProgressDialog progress;
+    StringRequest stringRequest;
+    RequestQueue request;
     double longitude;
     double latitude;
     boolean GPS_Activado;
@@ -104,6 +117,8 @@ public class AssistanceFragment extends Fragment {
         View vista =  inflater.inflate(R.layout.fragment_assistance, container, false);
         imgFoto=(ImageView)vista.findViewById(R.id.imgFoto);
         tomarFoto= (Button)vista.findViewById(R.id.btn_foto);
+
+        request= Volley.newRequestQueue(getContext());
 
         if(solicitaPermisosVersionesSuperiores()){
             tomarFoto.setEnabled(true);
@@ -148,6 +163,11 @@ public class AssistanceFragment extends Fragment {
                 public void onLocationChanged(Location location) {
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
+                    SharedPreferences preferences = getContext().getSharedPreferences("Ubicacion", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor Obj_editor = preferences.edit();
+                    Obj_editor.putString("longitude",""+longitude);
+                    Obj_editor.putString("latitude",""+latitude);
+                    Obj_editor.commit();
                 }
 
                 @Override
@@ -224,8 +244,67 @@ public class AssistanceFragment extends Fragment {
                 bitmap = BitmapFactory.decodeFile(path);
                 imgFoto.setImageBitmap(bitmap);
 
+                if (bitmap!=null){
+                    cargarWebService();
+                }
+
                 break;
         }
+    }
+
+    private void cargarWebService() {
+        progress = new ProgressDialog(getContext());
+        progress.setMessage("Consultando...");
+        progress.show();
+
+        String url = "http://javieribarra.cl/wsJSON_Asistencia.php?";
+
+        stringRequest  = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                progress.hide();
+                if(response.trim().equalsIgnoreCase("Enviado")){
+                    Toast.makeText(getContext(),"Se a registrado con exito",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getContext(),"Falla al registrar",Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "No se puedo conectar "+error.toString(), Toast.LENGTH_LONG).show();
+                progress.hide();
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SharedPreferences preference = getContext().getSharedPreferences("Ubicacion", Context.MODE_PRIVATE);
+                String Latitude = preference.getString("latitude", "");
+                String Longitude = preference.getString("longitude", "");
+                //String imagen = ConvertirImagen(bitmap);
+                SharedPreferences preferences = getContext().getSharedPreferences("Login", Context.MODE_PRIVATE);
+                String email = preferences.getString("email", "");
+
+                Map<String, String> parametros = new HashMap<>();
+                parametros.put("latitud", Latitude);
+                parametros.put("longitud", Longitude);
+                //parametros.put("imagen",imagen);
+                parametros.put("email", email);
+                return parametros;
+            }
+            };
+            request.add(stringRequest);
+    }
+
+    private String ConvertirImagen(Bitmap bitmap){
+        ByteArrayOutputStream array = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,array);
+        byte [] imagenByte=array.toByteArray();
+        String imagenString= Base64.encodeToString(imagenByte,Base64.DEFAULT);
+
+        return imagenString;
+
     }
 
     public void onButtonPressed(Uri uri) {
