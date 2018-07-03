@@ -111,7 +111,12 @@ public class ProfileFragment extends Fragment implements Response.Listener<JSONO
             email.setText(email.getText()+" "+jsonObject.optString("email_trabajador"));
             name.setText(name.getText()+" "+jsonObject.optString("nombre"));
             company.setText(company.getText()+" "+jsonObject.optString("empresa"));
-            active.setText(active.getText()+" "+jsonObject.optString("entrada"));
+            if (jsonObject.optInt("administrador")==1){
+                active.setText("Administrador");
+            }
+            else{
+                active.setText(active.getText()+" "+jsonObject.optString("entrada"));
+            }
             String rutaImagen = jsonObject.optString("imagen");
 
             if (rutaImagen!=null){

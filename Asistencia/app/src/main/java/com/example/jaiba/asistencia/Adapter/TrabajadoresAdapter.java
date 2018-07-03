@@ -49,12 +49,18 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
     public void onBindViewHolder(TrabajadoresHolder holder, int position) {
         holder.email.setText(ListaTrabajadores.get(position).getEmail());
         holder.name.setText(ListaTrabajadores.get(position).getName());
-        if (ListaTrabajadores.get(position).getEntry()==1){
-            holder.entry.setBackgroundColor(Color.parseColor("#CEF6CE"));
-        }
+        if (ListaTrabajadores.get(position).getAdministrador()==1)
+            holder.entry.setBackgroundColor(Color.parseColor("#CEF6F5"));
+
         else {
-            holder.entry.setBackgroundColor(Color.parseColor("#F6CECE"));
+            if (ListaTrabajadores.get(position).getEntry()==1){
+                holder.entry.setBackgroundColor(Color.parseColor("#CEF6CE"));
+            }
+            else {
+                holder.entry.setBackgroundColor(Color.parseColor("#F6CECE"));
+            }
         }
+
         if (ListaTrabajadores.get(position).getRutaImagen()!=null){
             //
             cargarImagenWebService(ListaTrabajadores.get(position).getRutaImagen(),holder);

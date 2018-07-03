@@ -83,7 +83,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     }
 
     private void mostrarDialogOpciones() {
-        final CharSequence[] opciones={"Activos","Inactivos","Todos"};
+        final CharSequence[] opciones={"Administradores","Usuarios","Activos","Inactivos","Todos"};
         final AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setTitle("Filtrar busqueda por");
         builder.setItems(opciones, new DialogInterface.OnClickListener() {
@@ -91,13 +91,18 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (opciones[i].equals("Activos")){
                     ESTADO="Activo";
-                }else{
-                    if (opciones[i].equals("Inactivos")){
-                        ESTADO="Inactivo";
-
-                    }else{
-                        ESTADO="";
-                    }
+                }
+                else if(opciones[i].equals("Inactivos")) {
+                    ESTADO = "Inactivo";
+                }
+                else if (opciones[i].equals("Administradores")){
+                    ESTADO = "Administrador";
+                }
+                else if (opciones[i].equals("Usuarios")) {
+                    ESTADO = "Usuario";
+                }
+                else{
+                    ESTADO="";
                 }
                 cargarWebService();
             }
@@ -144,6 +149,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
                 trabajadores.setName(jsonObject.optString("nombre"));
                 trabajadores.setEntry(jsonObject.optInt("entrada"));
                 trabajadores.setRutaImagen(jsonObject.getString("imagen"));
+                trabajadores.setAdministrador(jsonObject.getInt("administrador"));
 
                 listaTrabajadores.add(trabajadores);
             }

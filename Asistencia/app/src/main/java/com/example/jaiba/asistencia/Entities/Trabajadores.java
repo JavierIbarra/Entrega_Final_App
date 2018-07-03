@@ -9,6 +9,7 @@ public class Trabajadores {
     private String email;
     private int entry;
     private String rutaImagen;
+    private int administrador;
 
     public void Trabajadores(){}
 
@@ -33,4 +34,8 @@ public class Trabajadores {
     public String getRutaImagen() { return rutaImagen; }
 
     public void setRutaImagen(String rutaImagen) { this.rutaImagen = rutaImagen; }
+
+    public int getAdministrador() { return administrador; }
+
+    public void setAdministrador(int administrador) { this.administrador = administrador; }
 }

@@ -109,7 +109,6 @@ public class AdminActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        Fragment f =null;
         Fragment miFragment=null;
         boolean fragmentSeleccionado=false;
 
