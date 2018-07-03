@@ -42,7 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback,Response.Listener<JSONObject>,Response.ErrorListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private View vista;
     private GoogleMap mGoogleMap;
@@ -73,7 +73,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Response
 
         listaUbicaciones = new ArrayList<>();
         request = Volley.newRequestQueue(getContext());
-        cargarWebService();
+       // cargarWebService();
 
         vista = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -100,23 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Response
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        float lat;
-        float log;
-        String nomb;
 
-
-        float zoom = 13;
-        for (int x=0; x<largo;x++) {
-            lat = listaUbicaciones.get(x).getLatitud();
-            log = listaUbicaciones.get(x).getLongitud();
-            nomb = listaUbicaciones.get(x).getNombre();
-            LatLng agregar = new LatLng(lat, log);
-            mGoogleMap.addMarker(new MarkerOptions().position(agregar).title(nomb).snippet("Hora de ingreso: "+ listaUbicaciones.get(x).getHora()));
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(agregar, zoom));
-        }
-    }
-
-    private void cargarWebService() {
 
         progress=new ProgressDialog(getContext());
         progress.setMessage("Consultando...");
@@ -124,48 +108,65 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Response
 
         String url="http://javieribarra.cl/wsJSON.php?id_empresa="+ID_EMPRESA+"&ubicacion=1";
 
-        jsonObjectRequest=new JsonObjectRequest(Request.Method.GET,url,null,this,this);
-        VolleySingleton.getIntanciaVolley(getContext()).addToRequestQueue(jsonObjectRequest);
-    }
+        jsonObjectRequest=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Ubicaciones ubicaciones = null;
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Toast.makeText(getContext(), "No se puede conectar "+error.toString(), Toast.LENGTH_LONG).show();
-        System.out.println();
-        Log.d("ERROR: ", error.toString());
-        progress.hide();
-    }
+                JSONArray json = response.optJSONArray("Ubicacion");
 
-    @Override
-    public void onResponse(JSONObject response) {
-        Ubicaciones ubicaciones=null;
+                try {
 
-        JSONArray json=response.optJSONArray("Ubicacion");
+                    for (int i = 0; i < json.length(); i++) {
+                        ubicaciones = new Ubicaciones();
+                        JSONObject jsonObject = null;
+                        jsonObject = json.getJSONObject(i);
 
-        try {
+                        ubicaciones.setLatitud((float) jsonObject.optDouble("latitud"));
+                        ubicaciones.setLongitud((float) jsonObject.optDouble("longitud"));
+                        ubicaciones.setNombre(jsonObject.optString("nombre"));
+                        ubicaciones.setHora(jsonObject.optString("hora"));
 
-            for (int i=0;i<json.length();i++){
-                ubicaciones=new Ubicaciones();
-                JSONObject jsonObject=null;
-                jsonObject=json.getJSONObject(i);
+                        listaUbicaciones.add(ubicaciones);
+                    }
+                    progress.hide();
+                    largo = listaUbicaciones.size();
 
-                ubicaciones.setLatitud((float)jsonObject.optDouble("latitud"));
-                ubicaciones.setLongitud((float)jsonObject.optDouble("longitud"));
-                ubicaciones.setNombre(jsonObject.optString("nombre"));
-                ubicaciones.setHora(jsonObject.optString("hora"));
+                    float lat;
+                    float log;
+                    String nomb;
 
-                listaUbicaciones.add(ubicaciones);
+                    float zoom = 13;
+                    for (int x=0; x<largo;x++) {
+                        lat = listaUbicaciones.get(x).getLatitud();
+                        log = listaUbicaciones.get(x).getLongitud();
+                        nomb = listaUbicaciones.get(x).getNombre();
+                        LatLng agregar = new LatLng(lat, log);
+                        mGoogleMap.addMarker(new MarkerOptions().position(agregar).title(nomb).snippet("Hora de ingreso: "+ listaUbicaciones.get(x).getHora()));
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(agregar, zoom));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "No se ha podido establecer conexión con el servidor" +
+                            " " + response, Toast.LENGTH_LONG).show();
+                    progress.hide();
+                }
             }
-            progress.hide();
-            largo = listaUbicaciones.size();
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "No se puede conectar "+error.toString(), Toast.LENGTH_LONG).show();
+                System.out.println();
+                Log.d("ERROR: ", error.toString());
+                progress.hide();
+            }
+        });
+        VolleySingleton.getIntanciaVolley(getContext()).addToRequestQueue(jsonObjectRequest);
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), "No se ha podido establecer conexión con el servidor" +
-                    " "+response, Toast.LENGTH_LONG).show();
-            progress.hide();
-        }
+
     }
+
 
 
     public interface OnFragmentInteractionListener {
