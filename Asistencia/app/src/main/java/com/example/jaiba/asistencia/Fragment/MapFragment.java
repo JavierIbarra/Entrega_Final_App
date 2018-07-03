@@ -111,7 +111,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Response
             log = listaUbicaciones.get(x).getLongitud();
             nomb = listaUbicaciones.get(x).getNombre();
             LatLng agregar = new LatLng(lat, log);
-            mGoogleMap.addMarker(new MarkerOptions().position(agregar).title(nomb));
+            mGoogleMap.addMarker(new MarkerOptions().position(agregar).title(nomb).snippet("Hora de ingreso: "+ listaUbicaciones.get(x).getHora()));
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(agregar, zoom));
         }
     }
@@ -152,6 +152,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Response
                 ubicaciones.setLatitud((float)jsonObject.optDouble("latitud"));
                 ubicaciones.setLongitud((float)jsonObject.optDouble("longitud"));
                 ubicaciones.setNombre(jsonObject.optString("nombre"));
+                ubicaciones.setHora(jsonObject.optString("hora"));
 
                 listaUbicaciones.add(ubicaciones);
             }

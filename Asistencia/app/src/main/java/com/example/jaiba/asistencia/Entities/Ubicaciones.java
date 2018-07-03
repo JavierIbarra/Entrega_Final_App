@@ -5,6 +5,7 @@ public class Ubicaciones {
     private float latitud;
     private float longitud;
     private String nombre;
+    private String hora;
 
     public float getLongitud() {
         return longitud;
@@ -29,4 +30,8 @@ public class Ubicaciones {
     public void setLatitud(float latitud) {
         this.latitud = latitud;
     }
+
+    public String getHora() { return hora; }
+
+    public void setHora(String hora) { this.hora = hora; }
 }
