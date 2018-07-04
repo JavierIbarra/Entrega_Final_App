@@ -48,6 +48,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     ProgressDialog progress;
     RequestQueue request;
     JsonObjectRequest jsonObjectRequest;
+    JSONArray json;
 
     public ListParticipantsFragment() {
     }
@@ -126,7 +127,10 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(getContext(), "No se puede conectar "+error.toString(), Toast.LENGTH_LONG).show();
+
+        Toast.makeText(getContext(), "No existen usuarios para este filtro", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "No se puede conectar "+error.toString(), Toast.LENGTH_LONG).show();
+
         System.out.println();
         Log.d("ERROR: ", error.toString());
         progress.hide();
@@ -136,7 +140,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     public void onResponse(JSONObject response) {
         Trabajadores trabajadores=null;
         listaTrabajadores = new ArrayList<>();
-        JSONArray json=response.optJSONArray("Trabajador");
+        json = response.optJSONArray("Trabajador");
 
         try {
 
