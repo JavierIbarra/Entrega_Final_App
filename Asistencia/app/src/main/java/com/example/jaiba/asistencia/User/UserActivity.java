@@ -1,11 +1,15 @@
 package com.example.jaiba.asistencia.User;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,18 +20,40 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.jaiba.asistencia.Fragment.AssistanceFragment;
 import com.example.jaiba.asistencia.Fragment.ProfileFragment;
 import com.example.jaiba.asistencia.Interface.IFragment;
 import com.example.jaiba.asistencia.LoginActivity;
 import com.example.jaiba.asistencia.R;
+import com.example.jaiba.asistencia.VolleySingleton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Calendar;
 
 public class UserActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, IFragment{
+        implements NavigationView.OnNavigationItemSelectedListener, IFragment,
+        Response.Listener<JSONObject>,Response.ErrorListener{
 
     TextView textViewEmail;
     TextView textViewTipo;
+    RequestQueue request;
+    JsonObjectRequest jsonObjectRequest;
+    ProgressDialog progress;
+    int hora_entrada;
+    int minuto_entrada;
+    int hora_salida;
+    int minuto_salida;
 
     @Override
     protected void onResume() {
@@ -61,6 +87,54 @@ public class UserActivity extends AppCompatActivity
 
         Fragment miFragment=new AssistanceFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.content_user,miFragment).commit();
+
+        request= Volley.newRequestQueue(this);
+        cargarWebService();
+    }
+
+    private void cargarWebService() {
+
+        progress=new ProgressDialog(this);
+        progress.setMessage("Consultando...");
+        progress.show();
+
+        SharedPreferences preferences = this.getSharedPreferences("Login", Context.MODE_PRIVATE);
+        String ID_EMPRESA = preferences.getString("id_empresa","");
+
+        String url="http://javieribarra.cl/wsJSON.php?id_empresa="+ID_EMPRESA+"&horario=1";
+
+        jsonObjectRequest=new JsonObjectRequest(Request.Method.GET,url,null,this,this);
+        VolleySingleton.getIntanciaVolley(this).addToRequestQueue(jsonObjectRequest);
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        progress.hide();
+
+        JSONArray json = response.optJSONArray("Horario");
+        JSONObject jsonObject = null;
+
+        try {
+            jsonObject = json.getJSONObject(0);
+            hora_entrada = (jsonObject.optInt("hora_entrada"));
+            minuto_entrada = (jsonObject.optInt("minuto_entrada"));
+            hora_salida = (jsonObject.optInt("hora_salida"));
+            minuto_salida=(jsonObject.optInt("minuto_salida"));
+
+            NotificationActive(hora_entrada,minuto_entrada);
+            NotificationActive(hora_salida,minuto_salida);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        progress.hide();
+        Toast.makeText(this,"No se pudo Consultar "+error.toString(),Toast.LENGTH_SHORT).show();
+        Log.i("ERROR",error.toString());
     }
 
     private void Cambiar(View view) {
@@ -137,6 +211,23 @@ public class UserActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void NotificationActive(int hora, int minuto){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY,hora);
+        c.set(Calendar.MINUTE,minuto);
+        c.set(Calendar.SECOND,0);
+
+        startAlarm(c);
+    }
+
+    public void startAlarm(Calendar c){
+        AlarmManager alarmManager =(AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this,AlertReciever.class);
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(this,1,intent,0);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
     }
 
     @Override

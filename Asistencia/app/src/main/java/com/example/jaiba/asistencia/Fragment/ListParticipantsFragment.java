@@ -83,7 +83,7 @@ public class ListParticipantsFragment extends Fragment implements Response.Liste
     }
 
     private void mostrarDialogOpciones() {
-        final CharSequence[] opciones={"Administradores","Usuarios","Activos","Inactivos","Todos"};
+        final CharSequence[] opciones={"Activos","Inactivos","Usuarios","Administradores","Ningún filtro"};
         final AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setTitle("Filtrar busqueda por");
         builder.setItems(opciones, new DialogInterface.OnClickListener() {
