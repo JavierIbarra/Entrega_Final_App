@@ -52,6 +52,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     JsonObjectRequest jsonObjectRequest;
     ArrayList<Ubicaciones> listaUbicaciones;
     String ID_EMPRESA;
+    JSONArray json;
     int largo;
 
     private OnFragmentInteractionListener mListener;
@@ -96,7 +97,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
@@ -113,7 +113,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onResponse(JSONObject response) {
                 Ubicaciones ubicaciones = null;
 
-                JSONArray json = response.optJSONArray("Ubicacion");
+                json = response.optJSONArray("Ubicacion");
 
                 try {
 
@@ -156,18 +156,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "No se puede conectar "+error.toString(), Toast.LENGTH_LONG).show();
+                if (json==null){
+                    Toast.makeText(getContext(), "No existen personas registradas "/*+error.toString()*/, Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getContext(), "No se puede conectar "/*+error.toString()*/, Toast.LENGTH_LONG).show();
+                }
                 System.out.println();
                 Log.d("ERROR: ", error.toString());
                 progress.hide();
             }
         });
         VolleySingleton.getIntanciaVolley(getContext()).addToRequestQueue(jsonObjectRequest);
-
-
     }
-
-
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
