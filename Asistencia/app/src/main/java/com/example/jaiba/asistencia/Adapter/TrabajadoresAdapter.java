@@ -53,7 +53,7 @@ public class TrabajadoresAdapter extends RecyclerView.Adapter<TrabajadoresAdapte
             holder.entry.setBackgroundColor(Color.parseColor("#CEF6F5"));
 
         else {
-            if (ListaTrabajadores.get(position).getEntry()==1){
+            if (ListaTrabajadores.get(position).getEntry()%2==1){
                 holder.entry.setBackgroundColor(Color.parseColor("#CEF6CE"));
             }
             else {
